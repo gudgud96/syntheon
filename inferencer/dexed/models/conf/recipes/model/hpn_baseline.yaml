@@ -1,0 +1,13 @@
+_target_: aesddsp.ddsp.models.DDSP_Decoder
+decoder:
+  _target_: aesddsp.ddsp.models.RnnFCDecoder
+  hidden_size: 512
+  sample_rate: 16000
+  input_keys: ['f0_scaled','loudness_scaled']
+  input_sizes: [1,1]
+  output_keys: ['amplitude','harmonic_distribution','noise_bands']
+  output_sizes: [1,60,65]
+synth:
+  _target_: aesddsp.ddsp.synth.HNSynth
+  sample_rate: 16000
+  block_size: 64

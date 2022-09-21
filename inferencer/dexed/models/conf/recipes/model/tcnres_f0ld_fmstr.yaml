@@ -1,0 +1,18 @@
+_target_: ddx7.models.DDSP_Decoder
+decoder:
+  _target_: ddx7.models.TCNFMDecoder
+  n_blocks: 5
+  hidden_channels: 128
+  out_channels: 6
+  kernel_size: 3
+  dilation_base: 2
+  apply_padding: True
+  deploy_residual: True
+  input_keys: ['f0_scaled','loudness_scaled']
+synth:
+  _target_: ddx7.synth.FMSynth
+  sample_rate: 16000
+  block_size: 64
+  max_ol: 0.32       #max_ol is specified in multiples of 2*pi
+  fr: [1,1,1,1,3,14]
+  synth_module: fmstrings

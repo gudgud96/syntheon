@@ -1,0 +1,51 @@
+# Additional Dataset process options
+testset:
+  source_folder: '/homes/fsc01/proj/wavetest' # Path to a directory containing folders with instrument names
+  instruments: ['violin','flute','trumpet']   # Specify names of the folders in test set
+  contiguous: True                            # Do not 'chop' into instances, generate a single contiguous instance extracted from audio.
+  clip_noise: True                            # Clip loudness back to -80db when f0 is over 1900 (avoids crepe to track noise)
+  input_dir: 'files/test'
+  output_dir: 'data/test'
+
+
+# URMP Dataset process options
+urmp:
+  source_folder: 'E://URMP//Dataset' # path to urmp dataset finishing in ... "/URMP/Dataset"
+  instruments:  #URMP IDs of instruments
+    'vn': 'violin'
+    'tpt': 'trumpet'
+    'fl' : flute
+  mono_regex: 'AuSep'
+  num_workers: 4
+  input_dir: 'files/train'
+  output_dir: 'data/train'
+
+data_processor:
+  _target_: dataset.create_data.ProcessData
+  silence_thresh_dB: 40                 # Silence threshold for splitting instances.
+  sr: 16000                             # Sample rate
+  device: 'cpu'                      # Torch Device ID
+  crepe_params:
+    model: 'full'                       # use 'full' for dataset generation - 'tiny' also available
+    confidence_threshold: 0.80          # used 0.80 for flute, and 0.85 for violin and trumpet
+    batch_size: 128
+    fmin: 50
+    fmax: 2000
+  loudness_params:
+    nfft: 2048
+  rms_params:
+    frame_size: 2048
+  hop_size: 64                           # hop size in samples for CREPE, RMS, or loudness
+  max_len: 4                             # Maximum block len ( in seconds )
+  seq_len: 3                             # Minimum block len (in seconds) -> block is padded to fit max_len
+  debug: False                           # Verbose
+  center: False                          # True: Center loudness and pitch window before computing. False: Pad at the end.
+
+hydra:
+  run:
+    dir: outputs/null
+
+process_urmp: True      # Process URMP.
+process_testset: False  # Process additional testset.
+skip_copy: False        # Skip file copying (if you have already done so)
+skip_process: False     # Dry run.

@@ -1,0 +1,14 @@
+_target_: trainer.Hyperparams
+steps: 120000
+loss_fn:
+  _target_: ddx7.loss_functions.rec_loss
+  scales: [2048, 1024, 512, 256, 128, 64]
+  overlap: 0.75
+scheduler: ExponentialLR
+opt: Adam
+lr: 3e-4
+lr_decay_rate: 0.98
+lr_decay_steps: 10000
+grad_clip_norm: 2.0
+batch_size: 16
+n_store_best: 20 # How many checkpoints do we want to keep.

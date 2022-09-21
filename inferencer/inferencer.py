@@ -1,18 +1,31 @@
 """
 Connects model output to synth preset parameter IR.
 """
+class InferenceInput:
+    def __init__(self):
+        return NotImplementedError
+
+
+class InferenceOutput:
+    def __init__(self):
+        return NotImplementedError
+
 
 class Inferencer:
     def __init__(self, device="cuda"):
         self.device = device
 
-    def convert(self, model_pt_fname, audio_fname, output_name):
-        attention, wt_output = self.load_model(model_pt_fname, audio_fname)
-        self.convert_to_preset(attention, wt_output, output_name)
+    def convert(self, model_pt_fname, audio_fname):
+        model = self.load_model(model_pt_fname, self.device)
+        inference_output = self.inference(model, audio_fname, self.device)
+        synth_params_dict = self.convert_to_preset(inference_output)
+        return synth_params_dict
     
-    def load_model(self, model_pt_fname, audio_fname):
-        attention, wt_output = inference(model_pt_fname, audio_fname, device=self.device)
-        return attention, wt_output
+    def load_model(self, model_pt_fname, device="cuda"):
+        return NotImplementedError
+        
+    def inference(self, model, audio_fname):
+        return NotImplementedError
 
-    def convert_to_preset(self, attention, wt_output, output_name):
+    def convert_to_preset(self, inference_output):
         return NotImplementedError

@@ -1,7 +1,7 @@
-from converter import SynthConverter
+from converter.converter import SynthConverter
 import mido
 from pathlib import Path
-from dexed_constants import voice_struct, verify, VOICE_PARAMETER_RANGES, header_struct,\
+from converter.dexed.dexed_constants import voice_struct, VOICE_PARAMETER_RANGES, header_struct,\
     header_bytes, voice_bytes, N_VOICES, N_OSC, KEYS
 
 
@@ -33,7 +33,7 @@ class DexedConverter(SynthConverter):
         def get_voice(data):
             unpacked = voice_struct.unpack(data)
             # TODO: need to take actions after verify, skip for now
-            self.verify(unpacked, VOICE_PARAMETER_RANGES)
+            # self.verify(unpacked, VOICE_PARAMETER_RANGES)
             return unpacked
 
         get_header = header_struct.unpack

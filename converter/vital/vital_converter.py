@@ -2,7 +2,7 @@ import json
 import base64
 import struct
 from converter.converter import SynthConverter
-from vital_constants import N_WAVETABLES, CUSTOM_KEYS
+from converter.vital.vital_constants import N_WAVETABLES, CUSTOM_KEYS
 import numpy as np
 
 
@@ -58,7 +58,7 @@ class VitalConverter(SynthConverter):
     def parseToPluginFile(self, fname):
         # encode custom part
         wavetables = self.dict[CUSTOM_KEYS]["wavetables"]
-        for idx in range(len(N_WAVETABLES)):
+        for idx in range(N_WAVETABLES):
             wavetable = wavetables[idx]["wavetable"]
             wavetable_name = wavetables[idx]["name"]
             wavetable_osc_level = wavetables[idx]["osc_level"]
