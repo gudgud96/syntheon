@@ -1,8 +1,8 @@
 import json
 import base64
 import struct
-from converter.converter import SynthConverter
-from converter.vital.vital_constants import N_WAVETABLES, CUSTOM_KEYS
+from syntheon.converter.converter import SynthConverter
+from syntheon.converter.vital.vital_constants import N_WAVETABLES, CUSTOM_KEYS
 import numpy as np
 
 

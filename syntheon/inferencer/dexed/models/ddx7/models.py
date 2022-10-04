@@ -1,6 +1,6 @@
 import torch
 import torch.nn as nn
-from inferencer.dexed.models.ddx7.core import get_gru, get_mlp
+from syntheon.inferencer.dexed.models.ddx7.core import get_gru, get_mlp
 import torch.nn.functional as F
 
 '''

@@ -14,7 +14,7 @@ import matplotlib.pyplot as plt
 import yaml 
 
 
-with open("inferencer/vital/config.yaml", 'r') as stream:
+with open("syntheon/inferencer/vital/config.yaml", 'r') as stream:
     config = yaml.safe_load(stream)
 
 device = config["device"]

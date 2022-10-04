@@ -4,11 +4,11 @@ Differentiable wavetable synthesis component.
 import torch
 from torch import nn
 import numpy as np
-from inferencer.vital.models.utils import *
+from syntheon.inferencer.vital.models.utils import *
 from tqdm import tqdm
 import soundfile as sf
 import matplotlib.pyplot as plt
-from inferencer.vital.models.core import upsample
+from syntheon.inferencer.vital.models.core import upsample
 import random
 
 

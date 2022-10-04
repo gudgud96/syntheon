@@ -6,8 +6,8 @@ from pathlib import Path
 from tqdm import tqdm
 import numpy as np
 import librosa
-from inferencer.dexed.models.ddx7 import spectral_ops
-from inferencer.dexed.models.ddx7.core import hz_to_midi, _DB_RANGE, _F0_RANGE
+from syntheon.inferencer.dexed.models.ddx7 import spectral_ops
+from syntheon.inferencer.dexed.models.ddx7.core import hz_to_midi, _DB_RANGE, _F0_RANGE
 
 
 class dotdict(dict):

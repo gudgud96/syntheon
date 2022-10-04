@@ -1,9 +1,10 @@
-from inferencer.inferencer import Inferencer, InferenceInput, InferenceOutput
-from inferencer.dexed.models.preprocessor import ProcessData, F0LoudnessRMSPreprocessor
-from inferencer.dexed.models.ddx7.models import DDSP_Decoder, TCNFMDecoder
-from inferencer.dexed.models.ddx7.synth import FMSynth
-from inferencer.dexed.models.amp_utils import *
-from converter.dexed.dexed_converter import DexedConverter
+from syntheon.inferencer.inferencer import Inferencer, InferenceInput, InferenceOutput
+from syntheon.inferencer.dexed.models.preprocessor import ProcessData, F0LoudnessRMSPreprocessor
+from syntheon.inferencer.dexed.models.ddx7.models import DDSP_Decoder, TCNFMDecoder
+from syntheon.inferencer.dexed.models.ddx7.synth import FMSynth
+from syntheon.inferencer.dexed.models.amp_utils import *
+from syntheon.converter.dexed.dexed_converter import DexedConverter
+from syntheon.utils.pitch_extractor import extract_pitch
 import yaml
 import torch
 import librosa
@@ -11,6 +12,7 @@ import soundfile as sf
 import pickle
 import os
 import numpy as np
+import matplotlib.pyplot as plt
 
 
 class DexedInferenceOutput(InferenceOutput):
@@ -25,9 +27,11 @@ class DexedInferenceInput(InferenceInput):
 
 
 class DexedInferencer(Inferencer):
-    def convert(self, model_pt_fname, audio_fname):
+    def convert(self, audio_fname, model_pt_fname=None):
         # TODO: convert should be more like framework. preprocess -> load_model -> inference -> post_process
-        with open("inferencer/dexed/models/conf/data_config.yaml", 'r') as f:
+        if model_pt_fname is None:
+            model_pt_fname = "syntheon/inferencer/dexed/checkpoints/state_best.pth"
+        with open("syntheon/inferencer/dexed/models/conf/data_config.yaml", 'r') as f:
             data_config = yaml.safe_load(f)
         
         preprocessor = ProcessData(
@@ -44,9 +48,9 @@ class DexedInferencer(Inferencer):
         )
 
         audio, _ = librosa.load(audio_fname, sr=data_config["data_processor"]["sr"])
-        # TODO: f0 is too slow... can we just use vital's f0?
-        # f0 on cpu using torch is slow, but tf is fast. likewise for gpu.
-        f0 = preprocessor.extract_f0(audio)
+
+        f0 = extract_pitch(audio, data_config["data_processor"]["sr"], block_size=64)
+        f0 = f0.astype(np.float32)
         loudness = preprocessor.calc_loudness(audio)
         rms = preprocessor.calc_rms(audio)
 
@@ -68,7 +72,7 @@ class DexedInferencer(Inferencer):
         return synth_params_dict
 
     def load_model(self, model_pt_fname, device="cuda"):
-        with open("inferencer/dexed/models/conf/recipes/model/tcnres_f0ld_fmstr_noreverb.yaml", 'r') as f:
+        with open("syntheon/inferencer/dexed/models/conf/recipes/model/tcnres_f0ld_fmstr_noreverb.yaml", 'r') as f:
             config = yaml.safe_load(f)
 
         # prepare model
@@ -116,7 +120,7 @@ class DexedInferencer(Inferencer):
     def convert_to_preset(self, inference_output):
 
         dx_converter = DexedConverter()
-        params_dict = dx_converter.serializeToDict("inferencer/dexed/Dexed_01.syx")
+        params_dict = dx_converter.serializeToDict("syntheon/inferencer/dexed/Dexed_01.syx")
 
         lst = []
         for idx in range(6):
@@ -155,9 +159,9 @@ class DexedInferencer(Inferencer):
 if __name__ == "__main__":
     # TODO: move to test folder
     dexed_inferencer = DexedInferencer(device="cpu")
-    params = dexed_inferencer.convert("inferencer/dexed/checkpoints/state_best.pth", "inferencer/dexed/for_testing_only.wav")
+    params = dexed_inferencer.convert("syntheon/inferencer/dexed/checkpoints/state_best.pth", "test/test_audio/dexed_test_audio_1.wav")
 
-    from converter.dexed.dexed_converter import DexedConverter
+    from syntheon.converter.dexed.dexed_converter import DexedConverter
     dexed_converter = DexedConverter()
     dexed_converter.dict = params
-    dexed_converter.parseToPluginFile("testing_v1.syx")
+    dexed_converter.parseToPluginFile("dexed_output.syx")

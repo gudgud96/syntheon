@@ -3,7 +3,7 @@ import torch.nn.functional as F
 import torchcrepe
 import torchaudio
 import librosa
-from inferencer.dexed.models.ddx7.core import _DB_RANGE,_REF_DB
+from syntheon.inferencer.dexed.models.ddx7.core import _DB_RANGE,_REF_DB
 import math
 import numpy as np
 from time import time

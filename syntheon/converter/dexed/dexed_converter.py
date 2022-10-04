@@ -1,7 +1,7 @@
-from converter.converter import SynthConverter
+from syntheon.converter.converter import SynthConverter
 import mido
 from pathlib import Path
-from converter.dexed.dexed_constants import voice_struct, VOICE_PARAMETER_RANGES, header_struct,\
+from syntheon.converter.dexed.dexed_constants import voice_struct, VOICE_PARAMETER_RANGES, header_struct,\
     header_bytes, voice_bytes, N_VOICES, N_OSC, KEYS
 
 

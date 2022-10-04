@@ -1,13 +1,13 @@
-from inferencer.inferencer import Inferencer, InferenceInput, InferenceOutput
-from inferencer.vital.models.model import WTS
-from inferencer.vital.models.preprocessor import *
-from converter.vital.vital_constants import N_WAVETABLES, CUSTOM_KEYS
+from syntheon.inferencer.inferencer import Inferencer, InferenceInput, InferenceOutput
+from syntheon.inferencer.vital.models.model import WTS
+from syntheon.inferencer.vital.models.preprocessor import *
+from syntheon.converter.vital.vital_constants import N_WAVETABLES, CUSTOM_KEYS
 import yaml 
 import torch
 import numpy as np
 import json
 
-with open("inferencer/vital/config.yaml", 'r') as stream:
+with open("syntheon/inferencer/vital/config.yaml", 'r') as stream:
     config = yaml.safe_load(stream)
 
 # general parameters
@@ -45,10 +45,11 @@ class VitalInferenceInput(InferenceInput):
 
 
 class VitalInferencer(Inferencer):
-    def convert(self, model_pt_fname, audio_fname):
+    def convert(self, audio_fname, model_pt_fname=None):
         # for vital, the model loading depends on signal input length
         # TODO: should not let this happen ,signal input length become a config
-        
+        if model_pt_fname is None:
+            model_pt_fname = "syntheon/inferencer/vital/checkpoints/model_ableton_3.pt"
         y, y_len, pitch, loudness, times, onset_frames, mfcc = preprocess(audio_fname, sampling_rate=16000, block_size=160, 
                                                                          signal_length=signal_length)
         inference_input = VitalInferenceInput()
@@ -118,7 +119,7 @@ class VitalInferencer(Inferencer):
         return inference_output
     
     def convert_to_preset(self, inference_output):
-        with open("inferencer/vital/init.vital") as f:
+        with open("syntheon/inferencer/vital/init.vital") as f:
             x = json.load(f)
 
         x[CUSTOM_KEYS] = {}
@@ -137,11 +138,11 @@ class VitalInferencer(Inferencer):
 if __name__ == "__main__":
     # TODO: move to test folder
     vital_inferencer = VitalInferencer(device="cpu")
-    params = vital_inferencer.convert("inferencer/vital/checkpoints/model_ableton_3.pt", "inferencer/vital/ableton_3.wav")
+    params = vital_inferencer.convert("syntheon/inferencer/vital/checkpoints/model_ableton_3.pt", "test/test_audio/vital_test_audio_1.wav")
 
-    from converter.vital.vital_converter import VitalConverter
+    from syntheon.converter.vital.vital_converter import VitalConverter
     vital_converter = VitalConverter()
     vital_converter.dict = params
-    vital_converter.parseToPluginFile("output.vital")
+    vital_converter.parseToPluginFile("vital_output.vital")
 
     

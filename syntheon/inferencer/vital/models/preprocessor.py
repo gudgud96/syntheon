@@ -3,12 +3,12 @@ For loading and preprocessing audio
 """
 import numpy as np
 import torch
-from inferencer.vital.models.core import extract_loudness, extract_pitch
+from syntheon.inferencer.vital.models.core import extract_loudness, extract_pitch
 import librosa
 import yaml 
 from nnAudio import Spectrogram
 
-with open("inferencer/vital/config.yaml", 'r') as stream:
+with open("syntheon/inferencer/vital/config.yaml", 'r') as stream:
     config = yaml.safe_load(stream)
 
 # general parameters
