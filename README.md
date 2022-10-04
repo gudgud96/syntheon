@@ -11,6 +11,8 @@ python3 -m inferencer.vital.vital_inferencer
 
 python3 -m inferencer.dexed.dexed_inferencer
 
+python3 -m pytest
+
 ```
 
 ## TODO
