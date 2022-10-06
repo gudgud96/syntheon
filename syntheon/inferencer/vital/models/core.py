@@ -77,9 +77,12 @@ def resample(x, factor: int):
     return y
 
 
-def upsample(signal, factor):
+def upsample(signal, factor, preferred_size=None, mode="nearest"):
     signal = signal.permute(0, 2, 1)
-    signal = nn.functional.interpolate(signal, size=signal.shape[-1] * factor)
+    if preferred_size is not None:
+        signal = nn.functional.interpolate(signal, size=preferred_size, mode=mode)
+    else:
+        signal = nn.functional.interpolate(signal, size=signal.shape[-1] * factor, mode=mode)
     return signal.permute(0, 2, 1)
 
 

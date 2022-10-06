@@ -17,6 +17,7 @@ import matplotlib.pyplot as plt
 
 class DexedInferenceOutput(InferenceOutput):
     def __init__(self):
+        InferenceOutput.__init__(self)
         self.synth_audio = None           # TODO: can put default values here
         self.ol = None
 
@@ -27,7 +28,7 @@ class DexedInferenceInput(InferenceInput):
 
 
 class DexedInferencer(Inferencer):
-    def convert(self, audio_fname, model_pt_fname=None):
+    def convert(self, audio_fname, model_pt_fname=None, enable_eval=False):
         # TODO: convert should be more like framework. preprocess -> load_model -> inference -> post_process
         if model_pt_fname is None:
             model_pt_fname = "syntheon/inferencer/dexed/checkpoints/state_best.pth"
@@ -67,9 +68,9 @@ class DexedInferencer(Inferencer):
         inference_input.x = x
 
         model = self.load_model(model_pt_fname, self.device)
-        inference_output = self.inference(model, inference_input, self.device)
+        inference_output = self.inference(model, inference_input, self.device, enable_eval=enable_eval)
         synth_params_dict = self.convert_to_preset(inference_output)
-        return synth_params_dict
+        return synth_params_dict, inference_output.eval_dict
 
     def load_model(self, model_pt_fname, device="cuda"):
         with open("syntheon/inferencer/dexed/models/conf/recipes/model/tcnres_f0ld_fmstr_noreverb.yaml", 'r') as f:
@@ -101,7 +102,7 @@ class DexedInferencer(Inferencer):
         model.eval()        
         return model
     
-    def inference(self, model, inference_input, device="cuda"):
+    def inference(self, model, inference_input, device="cuda", enable_eval=False):
         if device == "cuda":
             inference_input.audio = inference_input.x["audio"].cuda()
             inference_input.f0 = inference_input.x["f0"].cuda()
@@ -159,7 +160,7 @@ class DexedInferencer(Inferencer):
 if __name__ == "__main__":
     # TODO: move to test folder
     dexed_inferencer = DexedInferencer(device="cpu")
-    params = dexed_inferencer.convert("syntheon/inferencer/dexed/checkpoints/state_best.pth", "test/test_audio/dexed_test_audio_1.wav")
+    params = dexed_inferencer.convert("test/test_audio/dexed_test_audio_1.wav")
 
     from syntheon.converter.dexed.dexed_converter import DexedConverter
     dexed_converter = DexedConverter()

@@ -46,7 +46,6 @@ class FMSynth(nn.Module):
         ol = self.max_ol*self.scale_fn(controls['ol'])
         ol_up = upsample(ol, self.block_size,'linear')
         f0_up = upsample(controls['f0_hz'], self.block_size,'linear')
-        print(ol_up.shape, f0_up.shape)
         signal = self.synth_module(f0_up,
                                 ol_up,
                                 self.fr,
@@ -54,7 +53,6 @@ class FMSynth(nn.Module):
                                 self.max_ol,
                                 self.use_cumsum_nd)
         #reverb part
-        print("is reverb", self.is_reverb)
         if self.is_reverb:
             signal = self.reverb(signal)
 

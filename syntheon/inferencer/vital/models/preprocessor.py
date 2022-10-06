@@ -118,6 +118,17 @@ def monotonize_pitch(times, onset_frames, pitch):
 
 def preprocess(f, sampling_rate, block_size, signal_length=-1, oneshot=True):
     x, sr = librosa.load(f, sampling_rate)
+    if signal_length == -1:     # full length
+        signal_length = len(x)
+    else:
+        if len(x) > signal_length:
+            x = x[:signal_length*sampling_rate]
+        elif len(x) < signal_length:
+            N = (signal_length - len(x) % signal_length) % signal_length
+            x = np.pad(x, (0, N))
+
+        if oneshot:
+            x = x[..., :signal_length]
 
     D = np.abs(librosa.stft(x))
     times = librosa.times_like(D, sr=sr)
@@ -126,14 +137,8 @@ def preprocess(f, sampling_rate, block_size, signal_length=-1, oneshot=True):
 
     onset_frames = sanitize_onsets(times, onset_frames, onset_strengths)
 
-    if signal_length == -1:     # full length
-        signal_length = len(x)
-    else:
-        N = (signal_length - len(x) % signal_length) % signal_length
-        x = np.pad(x, (0, N))
-
-        if oneshot:
-            x = x[..., :signal_length]
+    # TODO: HACK for now, onset detector missed. not all samples need this!!
+    onset_frames = np.concatenate([np.array([0]), onset_frames])
 
     pitch = extract_pitch(x, sampling_rate, block_size)
     loudness = extract_loudness(x, sampling_rate, block_size)
@@ -157,7 +162,6 @@ def preprocess(f, sampling_rate, block_size, signal_length=-1, oneshot=True):
     pitch, loudness = pitch.unsqueeze(-1).float(), loudness.unsqueeze(-1).float()
     loudness = (loudness - mean_loudness) / std_loudness
 
-    x_len = len(x[0])
     mfcc = spec(x)
 
-    return x, x_len, pitch, loudness, times, onset_frames, mfcc
+    return x, pitch, loudness, times, onset_frames, mfcc

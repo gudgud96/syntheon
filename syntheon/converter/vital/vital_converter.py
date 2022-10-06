@@ -4,6 +4,7 @@ import struct
 from syntheon.converter.converter import SynthConverter
 from syntheon.converter.vital.vital_constants import N_WAVETABLES, CUSTOM_KEYS
 import numpy as np
+import math
 
 
 class Base64Converter:
@@ -49,6 +50,13 @@ class VitalConverter(SynthConverter):
                     "osc_level": wavetable_osc_level
                 }
                 self.dict[CUSTOM_KEYS]["wavetables"].append(cur_dict)
+            
+            # switch off unused wavetables
+            if N_WAVETABLES == 1:
+                self.dict["settings"]["osc_2_on"] = 0.0
+                self.dict["settings"]["osc_3_on"] = 0.0
+            elif N_WAVETABLES == 2:
+                self.dict["settings"]["osc_3_on"] = 0.0
                     
         except Exception as e:
             print(str(e))
@@ -56,6 +64,10 @@ class VitalConverter(SynthConverter):
         return self.dict
     
     def parseToPluginFile(self, fname):
+        """
+        vital parameters value scale: https://github.com/mtytel/vital/blob/c0694a193777fc97853a598f86378bea625a6d81/src/common/synth_parameters.cpp
+        value scale computation: https://github.com/mtytel/vital/blob/c0694a193777fc97853a598f86378bea625a6d81/src/plugin/value_bridge.h
+        """
         # encode custom part
         wavetables = self.dict[CUSTOM_KEYS]["wavetables"]
         for idx in range(N_WAVETABLES):
@@ -68,17 +80,30 @@ class VitalConverter(SynthConverter):
             self.dict["settings"]["wavetables"][idx]["name"] = wavetable_name
             self.dict["settings"]["osc_{}_level".format(idx + 1)] = wavetable_osc_level
         
-        # resume init settings for adsr filter
-        # for idx in range(1, 7):
-        #     y["settings"]["env_{}_attack".format(idx)] = x_init["settings"]["env_{}_attack".format(idx)]
-        #     y["settings"]["env_{}_attack_power".format(idx)] = x_init["settings"]["env_{}_attack_power".format(idx)]
-        #     y["settings"]["env_{}_decay".format(idx)] = x_init["settings"]["env_{}_decay".format(idx)]
-        #     y["settings"]["env_{}_decay_power".format(idx)] = x_init["settings"]["env_{}_decay_power".format(idx)]
-        #     y["settings"]["env_{}_delay".format(idx)] = x_init["settings"]["env_{}_delay".format(idx)]
-        #     y["settings"]["env_{}_hold".format(idx)] = x_init["settings"]["env_{}_hold".format(idx)]
-        #     y["settings"]["env_{}_release".format(idx)] = x_init["settings"]["env_{}_release".format(idx)]
-        #     y["settings"]["env_{}_release_power".format(idx)] = x_init["settings"]["env_{}_release_power".format(idx)]
-        #     y["settings"]["env_{}_sustain".format(idx)] = x_init["settings"]["env_{}_sustain".format(idx)]
+        # switch off unused wavetables
+        if N_WAVETABLES == 1:
+            self.dict["settings"]["osc_2_on"] = 0.0
+            self.dict["settings"]["osc_3_on"] = 0.0
+        elif N_WAVETABLES == 2:
+            self.dict["settings"]["osc_3_on"] = 0.0
+        
+        # adsr filter
+        adsrs = self.dict[CUSTOM_KEYS]["adsr"]
+        # attack is kQuartic
+        self.dict["settings"]["env_1_attack"] = math.sqrt(math.sqrt(adsrs["attack"]))
+        # attack power is kLinear
+        self.dict["settings"]["env_1_attack_power"] = adsrs["attack_power"]
+        # decay is kQuartic
+        self.dict["settings"]["env_1_decay"] = math.sqrt(math.sqrt(adsrs["decay"]))
+        # decay power is kLinear
+        self.dict["settings"]["env_1_decay_power"] = adsrs["decay_power"]
+        # sustain is kLinear
+        self.dict["settings"]["env_1_sustain"] = adsrs["sustain"]
+
+        # self.dict["settings"]["env_1_delay"] = adsrs["delay"]
+        # self.dict["settings"]["env_1_hold"] = adsrs["hold"]
+        # self.dict["settings"]["env_1_release"] = adsrs["release"]
+        # self.dict["settings"]["env_1_release_power"] = adsrs["release_power"]
         # y["settings"]["lfos"] = x_init["settings"]["lfos"]
 
         del self.dict[CUSTOM_KEYS]
