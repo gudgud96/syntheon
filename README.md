@@ -15,5 +15,14 @@ python3 -m pytest
 
 ```
 
-## TODO
-- need to have evaluation scheme, e.g. Frechet audio distance, RMS loss returned
+## Usage
+
+```python
+from syntheon import infer_params
+
+output_params_file, eval_dict = infer_params(
+    "your_audio.wav", 
+    "vital", 
+    enable_eval=True
+)
+```

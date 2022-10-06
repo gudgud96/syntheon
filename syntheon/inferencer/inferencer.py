@@ -8,7 +8,10 @@ class InferenceInput:
 
 class InferenceOutput:
     def __init__(self):
-        return NotImplementedError
+        # for storing evaluation results
+        self.eval_dict = {
+            "loss":  -1
+        }
 
 
 class Inferencer:
@@ -19,7 +22,7 @@ class Inferencer:
         model = self.load_model(model_pt_fname, self.device)
         inference_output = self.inference(model, audio_fname, self.device)
         synth_params_dict = self.convert_to_preset(inference_output)
-        return synth_params_dict
+        return synth_params_dict, inference_output.eval_dict
     
     def load_model(self, model_pt_fname, device="cuda"):
         return NotImplementedError

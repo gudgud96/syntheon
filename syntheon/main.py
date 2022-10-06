@@ -18,16 +18,16 @@ obj_dict = {
     }
 }
 
-def infer_params(input_audio_name, synth_name):
+def infer_params(input_audio_name, synth_name, enable_eval=False):
     if synth_name not in obj_dict:
         raise ValueError("Synth name {} not available for parameter inference".format(synth_name))
     
     inferencer = obj_dict[synth_name]["inferencer"](device="cpu")
-    params = inferencer.convert(input_audio_name)
+    params, eval_dict = inferencer.convert(input_audio_name, enable_eval=enable_eval)
 
     converter = obj_dict[synth_name]["converter"]()
     converter.dict = params
     output_fname = "{}_output.syx".format(synth_name)
     converter.parseToPluginFile(output_fname)
 
-    return output_fname
+    return output_fname, eval_dict
