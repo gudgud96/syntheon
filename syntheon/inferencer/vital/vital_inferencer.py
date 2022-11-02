@@ -1,5 +1,5 @@
 from syntheon.inferencer.inferencer import Inferencer, InferenceInput, InferenceOutput
-from syntheon.inferencer.vital.models.model_v2 import WTSv2
+from syntheon.inferencer.vital.models.model import WTSv2
 from syntheon.inferencer.vital.models.preprocessor import *
 from syntheon.inferencer.vital.models.core import multiscale_fft
 from syntheon.converter.vital.vital_constants import N_WAVETABLES, CUSTOM_KEYS
@@ -51,9 +51,9 @@ class VitalInferenceInput(InferenceInput):
 
 class VitalInferencer(Inferencer):
     def convert(self, audio_fname, model_pt_fname=None, enable_eval=False):
-        # for vital, the model loading depends on signal input length
+        # TODO: switch to torchhub
         if model_pt_fname is None:
-            model_pt_fname = "syntheon/inferencer/vital/checkpoints/model_adsr_loudness_v2.pt"
+            model_pt_fname = "syntheon/inferencer/vital/checkpoints/model.pt"
         
         y, pitch, loudness, times, onset_frames, mfcc = preprocess(audio_fname, sampling_rate=16000, block_size=160, 
                                                                    signal_length=signal_length)

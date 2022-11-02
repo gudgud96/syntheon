@@ -228,7 +228,7 @@ if __name__ == "__main__":
 
     # test with adsr
     shaper = ADSREnvelopeShaper()
-    adsr = get_amp_shaper_v2(shaper, times[onset_frames], 
+    adsr = get_amp_shaper(shaper, times[onset_frames], 
                             attack_secs=torch.tensor([0.00]),
                             decay_secs=torch.tensor([0.05]),
                             sustain_level=torch.tensor([0.0]))

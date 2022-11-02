@@ -3,6 +3,7 @@ DX7 syx -> json constants.
 
 Credits to source: https://github.com/Nintorac/NeuralDX7/blob/master/scratch/dx7_constants.py
 DX7 specification: https://github.com/asb2m10/dexed/blob/master/Documentation/sysex-format.txt
+DX7 patches: DX7 patches: https://yamahablackboxes.com/collection/yamaha-dx7-synthesizer/patches/
 """
 import bitstruct
 
