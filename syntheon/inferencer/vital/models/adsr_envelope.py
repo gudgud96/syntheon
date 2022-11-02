@@ -1,5 +1,5 @@
 """
-ADSR envelope shaper
+Differentiable ADSR envelope shaper.
 """
 import numpy as np
 import torch
@@ -177,7 +177,7 @@ class ADSREnvelopeShaper(nn.Module):
         
         attack_ratio = attack_secs / total_secs
         decay_ratio = decay_secs / total_secs
-        # TODO: parameteize release_ratio
+        # TODO: parameterize release_ratio
         release_ratio = torch.tensor([0.]).repeat(attack_secs.size(0), 1, 1)
         if device == "cuda":
             release_ratio = release_ratio.cuda()
@@ -193,47 +193,6 @@ class ADSREnvelopeShaper(nn.Module):
 
 
 def get_amp_shaper(
-                shaper, 
-                onsets, 
-                attack_secs,
-                decay_secs,
-                sustain_level,
-                offsets=None):
-    """
-    implement case with no offset first.
-    """
-    if offsets is None:
-        # if offset not specified, take next onset as offset
-        offsets = onsets[1:]
-        onsets = onsets[:len(onsets) - 1]
-
-    start_offset = int(onsets[0] * 100)        # TODO: 100 is block size
-    onsets, offsets = torch.tensor(onsets), torch.tensor(offsets)
-    if device == "cuda":
-        onsets, offsets = onsets.cuda(), offsets.cuda()
-    dur_vec = offsets - onsets
-    lst = []
-
-    # append zeros first before first onset
-    if device == "cuda":
-        lst.append(torch.zeros(start_offset).cuda())
-    else:
-        lst.append(torch.zeros(start_offset))
-
-    for dur in dur_vec:
-        dur = round(dur.item(), 2)
-        adsr = shaper(
-            attack_secs=torch.tensor([0.2, 0.1]), 
-            decay_secs=torch.tensor([0.1, 0.2]),
-            sustain_level=torch.tensor([0.9, 0.2]),
-            total_secs=dur)
-        lst.append(adsr[0].squeeze())   # TODO: fix the batch size case
-    
-    final_signal = torch.cat(lst, dim=0)
-    return final_signal
-
-
-def get_amp_shaper_v2(
                 shaper, 
                 onsets, 
                 attack_secs,

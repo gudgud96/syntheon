@@ -31,4 +31,7 @@ class Inferencer:
         return NotImplementedError
 
     def convert_to_preset(self, inference_output):
+        """
+        Output a Python dictionary to be handled by the converter.
+        """
         return NotImplementedError

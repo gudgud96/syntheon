@@ -10,11 +10,13 @@ from .inferencer.vital.vital_inferencer import VitalInferencer
 obj_dict = {
     "dexed": {
         "converter": DexedConverter,
-        "inferencer": DexedInferencer
+        "inferencer": DexedInferencer,
+        "file_ext": "syx"
     },
     "vital": {
         "converter": VitalConverter,
-        "inferencer": VitalInferencer
+        "inferencer": VitalInferencer,
+        "file_ext": "vital"
     }
 }
 
@@ -27,7 +29,7 @@ def infer_params(input_audio_name, synth_name, enable_eval=False):
 
     converter = obj_dict[synth_name]["converter"]()
     converter.dict = params
-    output_fname = "{}_output.syx".format(synth_name)
+    output_fname = "{}_output.{}".format(synth_name, obj_dict[synth_name]["file_ext"])
     converter.parseToPluginFile(output_fname)
 
     return output_fname, eval_dict

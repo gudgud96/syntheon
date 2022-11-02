@@ -1,7 +1,6 @@
 import ddx7.core as core
 import torch
 import torch.nn as nn
-import torchcrepe
 from functools import partial
 
 
