@@ -2,11 +2,15 @@
 
 # Syntheon
 
-Syntheon - [Pantheon]() for music synthesizers. 
+Syntheon - [Pantheon](https://en.wikipedia.org/wiki/Pantheon,_Rome) for music synthesizers. 
 
-Syntheon aims to provide **parameter inference** for major music synthesizers using *deep learning models* to simplify sound design process. For now [Vital](https://vital.audio/) is supported, and [Dexed](https://asb2m10.github.io/dexed/) is on its way.
+Syntheon aims to provide **parameter inference** for major music synthesizers using *deep learning models*. Given an audio sample, Syntheon infers the best parameter preset for a given synthesizer that can recreate the audio sample. 
 
 **Check out [this presentation](https://docs.google.com/presentation/d/1PA4fom6QvCW_YG8L0MMVumrAluljcymndNlaK2HW5t0/edit?usp=sharing) on the recent advances of synth parameter inference.
+
+For now: 
+- [Vital](https://vital.audio/) is supported
+- [Dexed](https://asb2m10.github.io/dexed/) is work-in-progress
 
 ## Installation
 

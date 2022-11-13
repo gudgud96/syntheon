@@ -9,8 +9,6 @@ from tqdm import tqdm
 import soundfile as sf
 import matplotlib.pyplot as plt
 from syntheon.inferencer.vital.models.core import upsample
-import random
-import time
 from syntheon.inferencer.vital.models.adsr_envelope import *
 
 
@@ -101,12 +99,6 @@ class WavetableSynth(nn.Module):
             self.wavetables = nn.ParameterList(self.wavetables)
 
             for idx, wt in enumerate(self.wavetables):
-                # following the paper, initialize f0-f3 wavetables and disable backprop
-                # if idx == 0:
-                #     wt.data = generate_wavetable(wavetable_len, np.sin, cycle=2, phase=random.uniform(0, 1))
-                #     wt.data = torch.cat([wt[:-1], wt[0].unsqueeze(-1)], dim=-1)
-                #     wt.requires_grad = is_initial_wt_trainable
-                # else:
                 wt.data = torch.cat([wt[:-1], wt[0].unsqueeze(-1)], dim=-1)
                 wt.requires_grad = is_initial_wt_trainable
         else:
@@ -240,16 +232,7 @@ if __name__ == "__main__":
     adsr = upsample(adsr.unsqueeze(-1).unsqueeze(0), 160).squeeze()
 
     signal = signal * adsr
-    
-    # wt_synth = WavetableSynth(wavetables=sine_wavetable, sr=sr, duration_secs=4)
-    # amplitude_t = torch.ones(sr * duration,)
-    # amplitude_t = torch.stack([amplitude_t, amplitude_t, amplitude_t], dim=0)
-    # amplitude_t = amplitude_t.unsqueeze(-1)
 
-    # y = wt_synth(freq_t, amplitude_t, duration)
-    # print(y.shape, 'y')
-    # plt.plot(y.squeeze()[0].detach().numpy())
-    # plt.show()
     sf.write('test_3s_v1.wav', signal.squeeze()[0].detach().numpy(), sr, 'PCM_24')
     sf.write('test_3s_v2.wav', signal.squeeze()[1].detach().numpy(), sr, 'PCM_24')
     sf.write('test_3s_v3.wav', signal.squeeze()[2].detach().numpy(), sr, 'PCM_24')

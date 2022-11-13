@@ -1,5 +1,6 @@
 """
 Differentiable ADSR envelope shaper.
+Code largely influenced by https://github.com/hyakuchiki/diffsynth/blob/master/diffsynth/modules/envelope.py.
 """
 import numpy as np
 import torch
@@ -124,13 +125,6 @@ class ADSREnvelopeShaper(nn.Module):
             if device == "cuda":
                 peak = peak.cuda()
         
-        # attack ratio can be 0, but the initial adsr 0 values should be epsilon-ed
-        # decay ratio should be larger than 1 / total_n_frames
-        # decay secs should be larger than 1 / block_size
-        # attack and decay secs will be rounded up to minimum resolution (min resolution = 1/ block_size)
-        # DO WE REALLY NEED THIS? 
-        MIN_RATIO = 1 / 400     # HACK, 4 seconds * block size 100
-        
         attack = torch.clamp(attack, min=0, max=1)
         decay = torch.clamp(decay, min=0, max=1)
         sus_level = torch.clamp(sus_level, min=0.001, max=1)
@@ -139,7 +133,7 @@ class ADSREnvelopeShaper(nn.Module):
         batch_size = attack.shape[0]
         if n_frames is None:
             n_frames = self.n_frames
-        # batch, n_frames, 1
+
         x = torch.linspace(0, 1.0, n_frames)[None, :, None].repeat(batch_size, 1, 1)
         x[:, 0, :] = 1e-6       # offset 0 to epsilon value, so when attack = 0, first adsr value is not 0 but 1
         x = x.to(attack.device)

@@ -1,5 +1,5 @@
 """
-Common class for pitch extraction.
+[WIP] Common class for pitch extraction across all synthesizers.
 """
 
 import numpy as np
@@ -17,9 +17,11 @@ else:
     crepe_predictor = TorchCrepePredictor(device="cpu")
 
 
+# TODO: use ONNX runtime to enable inference optimization to reduce latency
 def extract_pitch(signal, sampling_rate, block_size, model_capacity="full"):
     length = signal.shape[-1] // block_size
     if device == "cpu":
+        # use TF crepe for cpu as hardware acceleration
         f0 = crepe.predict(
             signal,
             sampling_rate,
@@ -31,6 +33,7 @@ def extract_pitch(signal, sampling_rate, block_size, model_capacity="full"):
         )
         f0 = f0[1].reshape(-1)[:-1]
     else:
+        # use torchcrepe for gpu
         f0 = crepe_predictor.predict(
             signal,
             sampling_rate
