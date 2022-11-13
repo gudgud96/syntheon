@@ -1,3 +1,6 @@
+"""
+Vital inferencer.
+"""
 from syntheon.inferencer.inferencer import Inferencer, InferenceInput, InferenceOutput
 from syntheon.inferencer.vital.models.model import WTSv2
 from syntheon.inferencer.vital.models.preprocessor import *
@@ -174,7 +177,6 @@ class VitalInferencer(Inferencer):
 
 
 if __name__ == "__main__":
-    # TODO: move to test folder
     vital_inferencer = VitalInferencer(device="cpu")
     params, eval_dict = vital_inferencer.convert("test/test_audio/vital_test_audio_2.wav", enable_eval=True)
 
