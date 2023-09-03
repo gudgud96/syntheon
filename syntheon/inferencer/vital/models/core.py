@@ -12,9 +12,15 @@ from torchcrepeV2 import TorchCrepePredictor
 import math
 import matplotlib.pyplot as plt
 import yaml 
+import os
 
 
-with open("syntheon/inferencer/vital/config.yaml", 'r') as stream:
+with open(
+    os.path.join(
+        os.path.dirname(os.path.realpath(__file__)),
+        "../config.yaml"
+    ), 'r'
+) as stream:
     config = yaml.safe_load(stream)
 
 device = config["device"]

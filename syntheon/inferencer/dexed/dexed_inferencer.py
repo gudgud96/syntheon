@@ -32,7 +32,13 @@ class DexedInferencer(Inferencer):
         # TODO: convert should be more like framework. preprocess -> load_model -> inference -> post_process
         if model_pt_fname is None:
             model_pt_fname = "syntheon/inferencer/dexed/checkpoints/state_best.pth"
-        with open("syntheon/inferencer/dexed/models/conf/data_config.yaml", 'r') as f:
+            
+        with open(
+            os.path.join(
+                os.path.dirname(os.path.realpath(__file__)),
+                "models/conf/data_config.yaml"
+            ), 'r'
+        ) as f:
             data_config = yaml.safe_load(f)
         
         preprocessor = ProcessData(
@@ -73,7 +79,12 @@ class DexedInferencer(Inferencer):
         return synth_params_dict, inference_output.eval_dict
 
     def load_model(self, model_pt_fname, device="cuda"):
-        with open("syntheon/inferencer/dexed/models/conf/recipes/model/tcnres_f0ld_fmstr_noreverb.yaml", 'r') as f:
+        with open(
+            os.path.join(
+                os.path.dirname(os.path.realpath(__file__)),
+                "models/conf/recipes/model/tcnres_f0ld_fmstr_noreverb.yaml"
+            ), 'r'
+        ) as f:
             config = yaml.safe_load(f)
 
         # prepare model

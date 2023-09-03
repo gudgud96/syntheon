@@ -4,12 +4,18 @@ Code largely influenced by https://github.com/hyakuchiki/diffsynth/blob/master/d
 """
 import numpy as np
 import torch
+import os
 import matplotlib.pyplot as plt
 from torch import nn
 import yaml
 
 
-with open("syntheon/inferencer/vital/config.yaml", 'r') as stream:
+with open(
+    os.path.join(
+        os.path.dirname(os.path.realpath(__file__)),
+        "../config.yaml"
+    ), 'r'
+) as stream:
     config = yaml.safe_load(stream)
 device = config["device"]
 
