@@ -11,7 +11,12 @@ import torch
 import numpy as np
 import json
 
-with open("syntheon/inferencer/vital/config.yaml", 'r') as stream:
+with open(
+        os.path.join(
+            os.path.dirname(os.path.realpath(__file__)),
+            "config.yaml"
+        ), 'r'
+    ) as stream:
     config = yaml.safe_load(stream)
 
 # general parameters
@@ -56,7 +61,10 @@ class VitalInferencer(Inferencer):
     def convert(self, audio_fname, model_pt_fname=None, enable_eval=False):
         # TODO: switch to torchhub
         if model_pt_fname is None:
-            model_pt_fname = "syntheon/inferencer/vital/checkpoints/model.pt"
+            model_pt_fname = os.path.join(
+                os.path.dirname(os.path.realpath(__file__)),
+                "checkpoints/model.pt"
+            )
         
         y, pitch, loudness, times, onset_frames, mfcc = preprocess(audio_fname, sampling_rate=16000, block_size=160, 
                                                                    signal_length=signal_length)
@@ -134,7 +142,12 @@ class VitalInferencer(Inferencer):
         return inference_output
     
     def convert_to_preset(self, inference_output):
-        with open("syntheon/inferencer/vital/init.vital") as f:
+        with open(
+            os.path.join(
+                os.path.dirname(os.path.realpath(__file__)),
+                "init.vital"
+            ), 'r'
+        ) as f:
             x = json.load(f)
 
         x[CUSTOM_KEYS] = {}
