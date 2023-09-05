@@ -12,6 +12,8 @@ For now:
 - :heavy_check_mark: [Vital](https://vital.audio/) is supported
 - [Dexed](https://asb2m10.github.io/dexed/) is work-in-progress
 
+Try it out on [our Colab notebook demo](https://colab.research.google.com/github/gudgud96/syntheon/blob/main/Syntheon_Demo.ipynb). 
+
 ## Installation
 
 ```
