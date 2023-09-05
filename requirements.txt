@@ -1,14 +1,10 @@
 librosa 
-tensorflow 
 torch==1.12.1
 torchvision==0.13.1
 torchaudio==0.12.1
 pyyaml
 mido 
-crepe==0.0.12 
-hmmlearn==0.2.7 
 nnAudio==0.3.1 
 numpy 
 bitstruct 
-torchcrepe 
 torchcrepeV2

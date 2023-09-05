@@ -2,7 +2,6 @@ import torch
 import torch.nn as nn
 import math
 from syntheon.inferencer.dexed.models.ddx7.core import *
-import matplotlib.pyplot as plt
 import soundfile as sf
 import librosa
 

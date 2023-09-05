@@ -5,7 +5,6 @@ Code largely influenced by https://github.com/hyakuchiki/diffsynth/blob/master/d
 import numpy as np
 import torch
 import os
-import matplotlib.pyplot as plt
 from torch import nn
 import yaml
 
@@ -53,7 +52,6 @@ class ADSREnvelopeShaper(nn.Module):
     def power_function(self, x, pow=2):
         if pow > 0: # convex
             # transpose
-            plt.plot(x.squeeze().detach().numpy(), label='test1')
 
             if x.squeeze()[0] > x.squeeze()[-1]:
                 y_intercept = x.squeeze()[-1]
@@ -71,13 +69,8 @@ class ADSREnvelopeShaper(nn.Module):
             # transpose back
             y = y * max_val + y_intercept
 
-            plt.plot(y.squeeze().detach().numpy(), label='test3')
-            plt.show()
-
         else:
             # transpose
-            plt.plot(x.squeeze().detach().numpy(), label='test1')
-
             if x.squeeze()[0] > x.squeeze()[-1]:
                 max_val = x.squeeze()[0]
                 y = x - x[:, 0, :]
@@ -89,21 +82,10 @@ class ADSREnvelopeShaper(nn.Module):
                 y_intercept = y.squeeze()[0]
                 y = y / -y_intercept
 
-            plt.plot(y.squeeze().detach().numpy(), label='test2')
-
             y = -(y ** -pow)
-
-            plt.plot(y.squeeze().detach().numpy(), label='test3')
 
             # transpose back
             y = y * -y_intercept + max_val
-
-            plt.plot(y.squeeze().detach().numpy(), label='test4')
-            plt.legend()
-            plt.show()
-
-            # plt.plot(y.squeeze().detach().numpy(), label='test3')
-            # plt.show()
 
         return y
     
@@ -237,6 +219,8 @@ def get_amp_shaper(
 
 if __name__ == "__main__":
     # TODO: unit test for this class
+    import matplotlib.pyplot as plt
+
     shaper = ADSREnvelopeShaper(is_round_secs=False)
     adsrs = []
     for elem in [0.0, 0.001, 0.005, 0.01, 0.02]:
