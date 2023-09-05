@@ -5,9 +5,7 @@ import torch
 from torch import nn
 import numpy as np
 from syntheon.inferencer.vital.models.utils import *
-from tqdm import tqdm
 import soundfile as sf
-import matplotlib.pyplot as plt
 from syntheon.inferencer.vital.models.core import upsample
 from syntheon.inferencer.vital.models.adsr_envelope import *
 

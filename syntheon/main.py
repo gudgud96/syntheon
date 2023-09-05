@@ -1,18 +1,11 @@
 """
 Function APIs to be called externally.
 """
-from .converter.dexed.dexed_converter import DexedConverter
-from .inferencer.dexed.dexed_inferencer import DexedInferencer
 from .converter.vital.vital_converter import VitalConverter
 from .inferencer.vital.vital_inferencer import VitalInferencer
 
 
 obj_dict = {
-    "dexed": {
-        "converter": DexedConverter,
-        "inferencer": DexedInferencer,
-        "file_ext": "syx"
-    },
     "vital": {
         "converter": VitalConverter,
         "inferencer": VitalInferencer,

@@ -12,7 +12,6 @@ import soundfile as sf
 import pickle
 import os
 import numpy as np
-import matplotlib.pyplot as plt
 
 
 class DexedInferenceOutput(InferenceOutput):

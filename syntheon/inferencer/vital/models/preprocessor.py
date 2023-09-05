@@ -4,7 +4,8 @@ For loading and preprocessing audio
 import numpy as np
 import os
 import torch
-from syntheon.inferencer.vital.models.core import extract_loudness, extract_pitch
+from syntheon.utils.pitch_extractor import extract_pitch
+from syntheon.inferencer.vital.models.core import extract_loudness
 import librosa
 import yaml 
 from nnAudio import Spectrogram

@@ -3,18 +3,18 @@ import glob
 from syntheon import infer_params
 
 
-def test_dexed_inferencer():
-    """
-    just check if everything runs well for Dexed
-    """
-    output_params_file, eval_dict = infer_params(
-        "test/test_audio/dexed_test_audio_1.wav", 
-        "dexed", 
-        enable_eval=True
-    )
-    assert os.path.exists(output_params_file)
+# def test_dexed_inferencer():
+#     """
+#     just check if everything runs well for Dexed
+#     """
+#     output_params_file, eval_dict = infer_params(
+#         "test/test_audio/dexed_test_audio_1.wav", 
+#         "dexed", 
+#         enable_eval=True
+#     )
+#     assert os.path.exists(output_params_file)
 
-    os.remove(output_params_file)
+#     os.remove(output_params_file)
 
 
 def test_vital_inferencer_1():
